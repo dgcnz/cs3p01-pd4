@@ -1,0 +1,3 @@
+Como se puede observar en la gráfica, el tiempo de ejecución aumenta en proporción directa con la cantidad de procesadores empleados. 
+Esto se debe a que la cantidad de datos empleados es pequeña, por lo que el tiempo de comunicación del algoritmo se vuelve significativo, 
+llegando a aproximarse al tiempo de cálculo del algoritmo.

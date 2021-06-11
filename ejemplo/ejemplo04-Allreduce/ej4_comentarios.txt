@@ -1,0 +1,7 @@
+Como se puede observar en el DAG generado, el uso de métodos de comunicación colectiva como MPI_Allreduce
+permiten reducir la profundidad del grafo en 1, dado que el resultado de los 3 primeros nodos llega
+a cada uno de ellos, eliminando la necesidad de un nodo intermedio (T4 en el caso original) que realice
+una operación, lo cual implica recopilar información y comunicar un dato a estos 3 nodos. No obstante,
+es importante resaltar que todos las operaciones observadas en el ejemplo original se siguen realizando pero,
+debido al poco costo computacional de estas, es conveniente reducir el tiempo de comunicación mediante
+métodos de comunicación colectiva, siendo la operación T4 realizada en todos los nodos.

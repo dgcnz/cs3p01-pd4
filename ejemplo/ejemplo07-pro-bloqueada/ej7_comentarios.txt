@@ -1,0 +1,6 @@
+Como se puede observar en la gráfica realizada, la comunicación no-bloqueada permite reducir el tiempo de procesamiento del algoritmo al
+minimizar el tiempo de comunicación total del programa. Esto es posible al no pedir una confirmación en cada mensaje enviado, lo que
+reduce una vuelta entera en el proceso de comunicación entre procesadores. Es decir, no se espera que el mensaje entero llegue al 
+buffer del procesador destino, a no ser que se utilice MPI_Wait(). Como se puede observar, el tiempo de comunicación es menor para
+todos los casos cuando se utiliza comunicación no-bloqueada. No obstante, es importante resaltar que en un sistema complejo, donde la
+información puede resultar sensible, y se trabaja a altas tasas de envío de datos, este tipo de comunicación no es recomendable.
