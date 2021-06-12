@@ -5,12 +5,12 @@
 
 using namespace std;
 
-int size;
-
 int f_beg(int rank);
 void initialize_A_v(int A[][N], int v[]);
 void print_matrix(int A[][N]);
 void print_vector(int v[]);
+
+int size;
 	
 int main(int argc, char **argv)
 {

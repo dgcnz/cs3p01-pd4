@@ -56,7 +56,7 @@ double infNorm(double A[][N]) {
 
 	int i_beg = f_beg(rank, size), i_end = f_beg(rank + 1, size);
 
-	// Distribute A and v from process 0 to all other processes
+	// Distribute A from process 0 to all other processes
 	if (rank == 0) {
 		for (int i = 1; i < size; i++) {
 			MPI_Send(A[f_beg(i, size)], N * (f_beg(i + 1, size) - f_beg(i, size)), MPI_DOUBLE, i, 0, MPI_COMM_WORLD);
@@ -85,22 +85,17 @@ double infNorm(double A[][N]) {
 	// cout << "RANK: " << rank << endl;
 	// print_matrix(A);
 
-	// Send x back from all processes to process 0
-	if (rank != 0) {
-		MPI_Send(&norm, 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
-	}
-	else {
-		double recv_norm;
-		for (int i = 1; i < size; i++) {
-			MPI_Recv(&recv_norm, 1, MPI_DOUBLE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-			
-			if (recv_norm > norm) {
-				norm = recv_norm;
-			}
-		}
-	}
+	// Send global maximum norm to process 0
+	double global_norm;
+
+	MPI_Reduce(&norm, &global_norm, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+	norm = global_norm;
 
     MPI_Finalize();
+
+	if (rank != 0) {
+		exit(0);
+	}
 
 	return norm;
 }
