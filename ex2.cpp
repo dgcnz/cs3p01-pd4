@@ -1,28 +1,47 @@
 #include <mpi.h>
 #include <stdio.h>
+#include <string>
+
+using namespace std;
 
 int main(int argc, char **argv)
 {
-    // Initialize the MPI environment
-    MPI_Init(NULL, NULL);
+    int m = 4;   // trips
+    int msg = 0; // 0-length message
 
-    // Get the number of processes
-    int world_size;
-    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+    int n;             // nodes
+    int pid;           // processor id
+    MPI_Status status; // mpi status
 
-    // Get the rank of the process
-    int world_rank;
-    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+    MPI_Init(&argc, &argv);
 
-    // Get the name of the processor
-    char processor_name[MPI_MAX_PROCESSOR_NAME];
-    int name_len;
-    MPI_Get_processor_name(processor_name, &name_len);
+    MPI_Comm_rank(MPI_COMM_WORLD, &pid);
+    MPI_Comm_size(MPI_COMM_WORLD, &n);
 
-    // Print off a hello world message
-    printf("Hello world from processor %s, rank %d out of %d processors\n",
-           processor_name, world_rank, world_size);
+    if (n > 1)
+    {
+        for (int i = 0; i < m; ++i)
+        {
+            if (pid == 0)
+            {
+                MPI_Send(&msg, 1, MPI_INT, 1, 0, MPI_COMM_WORLD);
+                printf("pid 0 sends to pid 1\n");
+                MPI_Recv(&msg, 1, MPI_INT, n - 1, 0, MPI_COMM_WORLD, &status);
+                printf("pid 0 receives from pid %d\n", n - 1);
+            }
+            else
+            {
+                MPI_Recv(&msg, 1, MPI_INT, pid - 1, 0, MPI_COMM_WORLD, &status);
+                printf("pid %d receives from pid %d\n", pid, pid - 1);
+                MPI_Send(&msg, 1, MPI_INT, (pid + 1) % n, 0, MPI_COMM_WORLD);
+                printf("pid %d sends to pid %d\n", pid, (pid + 1) % n);
+            }
+        }
+    }
+    else
+    {
+        printf("n should be greater than 1\n");
+    }
 
-    // Finalize the MPI environment.
     MPI_Finalize();
 }
