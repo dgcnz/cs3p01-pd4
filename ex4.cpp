@@ -2,7 +2,7 @@
 #include <mpi.h>
 #include <math.h>
 
-#define N 10
+#define N 3000
 
 using namespace std;
 
@@ -12,7 +12,8 @@ void print_matrix(double A[][N]);
 double infNorm(double A[][N]);
 
 int size;
-	
+double A[N][N];
+
 int main(int argc, char **argv)
 {
 	int rank;
@@ -21,19 +22,25 @@ int main(int argc, char **argv)
 
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-	double A[N][N];
-
 	if (rank == 0) {
 		initialize_A(A);
-		print_matrix(A);
+
+		// print_matrix(A);
 	}
 
+    double start, finish;
+
+    start = MPI_Wtime();
+
 	double norm = infNorm(A);
+
+    finish = MPI_Wtime();
 
     MPI_Finalize();
 
 	if (rank == 0) {
 		cout << "Norm: " << norm << endl;
+		cout << "TIME: " << 1000 * (finish - start) << "ms" << endl;
 	}
 
 	return 0;

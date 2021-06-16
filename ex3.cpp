@@ -11,6 +11,7 @@ void print_matrix(int A[][N]);
 void print_vector(int v[]);
 
 int size;
+int A[N][N], v[N], x[N];
 	
 int main(int argc, char **argv)
 {
@@ -21,18 +22,23 @@ int main(int argc, char **argv)
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-	int A[N][N], v[N], x[N];
+	if (rank == 0) {
+		initialize_A_v(A, v);
+
+		// cout << "Matrix A:" << endl;
+		// print_matrix(A);
+		// cout << "Vector v:" << endl;
+		// print_vector(v);
+	}
+		
 
 	int i_beg = f_beg(rank), i_end = f_beg(rank + 1);
 
+    double start, finish;
+
+    start = MPI_Wtime();
 	// Distribute A and v from process 0 to all other processes
 	if (rank == 0) {
-		initialize_A_v(A, v);
-		cout << "Matrix A:" << endl;
-		print_matrix(A);
-		cout << "Vector v:" << endl;
-		print_vector(v);
-	
 		for (int i = 1; i < size; i++) {
 			MPI_Send(A[f_beg(i)], N * (f_beg(i + 1) - f_beg(i)), MPI_INT, i, 0, MPI_COMM_WORLD);
 			MPI_Send(v, N, MPI_INT, i, 0, MPI_COMM_WORLD);
@@ -65,6 +71,7 @@ int main(int argc, char **argv)
 			MPI_Recv(x + f_beg(i), f_beg(i + 1) - f_beg(i), MPI_INT, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		}
 	}
+    finish = MPI_Wtime();
 
     MPI_Finalize();
 
@@ -72,6 +79,8 @@ int main(int argc, char **argv)
 	if (rank == 0) {
 		cout << "Result vector x:" << endl;
 		print_vector(x);
+
+		cout << "TIME: " << 1000 * (finish - start) << "ms" << endl;
 	}
 
 	return 0;
