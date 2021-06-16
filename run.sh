@@ -17,4 +17,4 @@ then
 	NUM_P=2
 fi
 
-mpirun -np $NUM_P $EXE
+mpirun -np $NUM_P ./$EXE
