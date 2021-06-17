@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import subprocess
 
 TESTS = 100
-N_VALUES = [2, 4, 8, 16]
+N_VALUES = [2, 4, 6, 8]
 M_VALUES = [2, 4, 8, 16]
 
 
@@ -26,7 +26,7 @@ def main():
     x2 = []
     y2 = []
 
-    m = 5
+    m = 1
     for n in N_VALUES:
         x1.append(n)
         y1.append(measure_process(n, m))
