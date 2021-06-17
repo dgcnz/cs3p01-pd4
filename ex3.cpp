@@ -1,7 +1,7 @@
 #include <iostream>
 #include <mpi.h>
 
-#define N 10
+#define N 400
 
 using namespace std;
 
@@ -49,6 +49,7 @@ int main(int argc, char **argv)
 		MPI_Recv(v, N, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 	}
 
+    // start = MPI_Wtime();
 	// Multiply
 	for (int i = i_beg; i < i_end; i++) {
 		x[i] = 0;
@@ -57,6 +58,7 @@ int main(int argc, char **argv)
 			x[i] += A[i][j] * v[j];
 		}
 	}
+    // finish = MPI_Wtime();
 	
 	// Uncomment to see which section of the matrix was copied by this process
 	// cout << "RANK: " << rank << endl;
@@ -77,10 +79,10 @@ int main(int argc, char **argv)
 
 	// Print result on the main process
 	if (rank == 0) {
-		cout << "Result vector x:" << endl;
-		print_vector(x);
+		// cout << "Result vector x:" << endl;
+		// print_vector(x);
 
-		cout << "TIME: " << 1000 * (finish - start) << "ms" << endl;
+		cout << "TIME " << 1000 * (finish - start) << endl;
 	}
 
 	return 0;

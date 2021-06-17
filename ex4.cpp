@@ -2,7 +2,8 @@
 #include <mpi.h>
 #include <math.h>
 
-#define N 3000
+#define N 800
+// #define N 3000
 
 using namespace std;
 
@@ -13,6 +14,8 @@ double infNorm(double A[][N]);
 
 int size;
 double A[N][N];
+
+double start, finish;
 
 int main(int argc, char **argv)
 {
@@ -28,8 +31,6 @@ int main(int argc, char **argv)
 		// print_matrix(A);
 	}
 
-    double start, finish;
-
     start = MPI_Wtime();
 
 	double norm = infNorm(A);
@@ -39,8 +40,8 @@ int main(int argc, char **argv)
     MPI_Finalize();
 
 	if (rank == 0) {
-		cout << "Norm: " << norm << endl;
-		cout << "TIME: " << 1000 * (finish - start) << "ms" << endl;
+		// cout << "Norm: " << norm << endl;
+		cout << "TIME " << 1000 * (finish - start) << endl;
 	}
 
 	return 0;
@@ -86,6 +87,8 @@ double infNorm(double A[][N]) {
 		MPI_Recv(A[i_beg], N * (i_end - i_beg), MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 	}
 
+
+    // start = MPI_Wtime();
 	// Multiply
 	double s, norm;
 	norm = fabs(A[i_beg][0]);
@@ -100,6 +103,7 @@ double infNorm(double A[][N]) {
 			norm = s;
 		}
 	}
+    // finish = MPI_Wtime();
 
 	// Uncomment to see which section of the matrix was copied by this process
 	// cout << "RANK: " << rank << endl;
