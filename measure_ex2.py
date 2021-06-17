@@ -6,32 +6,48 @@ N_VALUES = [2, 3, 4, 5]
 M_VALUES = [5, 10, 15, 20]
 
 
+def measure_process(n, m):
+    print(f"n={n} m={m}")
+
+    acc = 0.0
+    for i in range(TESTS):
+        cmd = ["mpirun", "-np", str(n), "./ex2.out", str(m)]
+        out = subprocess.run(cmd, capture_output=True)
+        acc += float(out.stdout)
+    avg = round(acc / TESTS, 3)
+
+    return avg
+
+
 def main():
-    x = []
-    y = []
-    z = []
+    # Generating data...
+    x1 = []
+    y1 = []
+    x2 = []
+    y2 = []
 
+    m = 10
     for n in N_VALUES:
-        for m in M_VALUES:
-            print(f"n={n} m={m}")
+        x1.append(n)
+        y1.append(measure_process(n, m))
 
-            acc = 0.0
-            for i in range(TESTS):
-                cmd = ["mpirun", "-np", str(n), "./ex2.out", str(m)]
-                out = subprocess.run(cmd, capture_output=True)
-                acc += float(out.stdout)
-            avg = round(acc / TESTS, 3)
+    n = 3
+    for m in M_VALUES:
+        x2.append(m)
+        y2.append(measure_process(n, m))
 
-            x.append(n)
-            y.append(m)
-            z.append(avg)
+    # Plotting...
+    fig, axs = plt.subplots(2)
+    fig.tight_layout()
 
-    fig = plt.figure()
-    ax = fig.add_subplot(projection="3d")
-    ax.scatter(x, y, z)
-    ax.set_xlabel("p")
-    ax.set_ylabel("trips")
-    ax.set_zlabel("time (seconds)")
+    axs[0].scatter(x1, y1)
+    axs[0].set_xlabel("p")
+    axs[0].set_ylabel("time (seconds)")
+
+    axs[1].scatter(x2, y2)
+    axs[1].set_xlabel("trips")
+    axs[1].set_ylabel("time (seconds)")
+
     plt.show()
 
 
