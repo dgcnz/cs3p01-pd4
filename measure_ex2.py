@@ -2,8 +2,8 @@ import matplotlib.pyplot as plt
 import subprocess
 
 TESTS = 100
-N_VALUES = [2, 3, 4, 5]
-M_VALUES = [5, 10, 15, 20]
+N_VALUES = [2, 4, 8, 16]
+M_VALUES = [2, 4, 8, 16]
 
 
 def measure_process(n, m):
@@ -26,19 +26,18 @@ def main():
     x2 = []
     y2 = []
 
-    m = 10
+    m = 5
     for n in N_VALUES:
         x1.append(n)
         y1.append(measure_process(n, m))
 
-    n = 3
+    n = 5
     for m in M_VALUES:
         x2.append(m)
         y2.append(measure_process(n, m))
 
     # Plotting...
     fig, axs = plt.subplots(2)
-    fig.tight_layout()
 
     axs[0].scatter(x1, y1)
     axs[0].set_xlabel("p")
@@ -48,7 +47,8 @@ def main():
     axs[1].set_xlabel("trips")
     axs[1].set_ylabel("time (seconds)")
 
-    plt.show()
+    plt.tight_layout()
+    plt.savefig("fig.png")
 
 
 if __name__ == "__main__":
